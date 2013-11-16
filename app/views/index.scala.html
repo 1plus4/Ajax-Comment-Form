@@ -1,0 +1,38 @@
+@(comments: List[Comment])
+
+@main("Ajax Comment") {
+
+<form class="form-inline" id="comment-form">
+  <input type="text" id="input-comment" placeholder="comment" />
+  <button type="submit" id="comment-submit">post</button>
+</form>
+
+<ul id="comments">
+  @comments.map { comment =>
+    <li>@comment.comment</li>
+  }
+<ul>
+
+<script>
+$('#comment-form').submit(function(event) {
+  event.preventDefault();
+  var comment = $("#input-comment").val();
+  jsRoutes.controllers.Application.postComment(comment).ajax({
+    beforeSend: function() {
+      $("#comment-submit").attr('disabled', true);
+    },
+    complete: function() {
+      $("#comment-submit").attr('disabled', false);
+    },
+    success: function(datetime) {
+      $("#input-comment").val("");
+      $('#comments').append("<li>" + comment + "</li>")
+    },
+    error: function() {
+      alert("error")
+    }
+  })
+});
+</script>
+
+}
